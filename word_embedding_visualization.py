@@ -8,7 +8,7 @@ from tensorflow.contrib.tensorboard.plugins import projector
 
 
 # Path to glove embeddings file.
-glove_file = 'embeddings/glove.6B.100d.txt' 
+glove_file = '../data/glove/glove.6B.100d.txt' 
 # loading your gensim
 with open(glove_file,'r') as f:
 	glove_file_data = f.readlines()
@@ -23,7 +23,7 @@ for line in glove_file_data:
 	idx2word.append(line_split[0])
 	glove_embd.append(list(map(float,line_split[1:])))
 
-n_words = 20
+n_words = 100000
 
 print("Total number of words :",len(glove_embd))
 # project part of vocab, 10K of 300 dimension
@@ -52,7 +52,7 @@ writer = tf.summary.FileWriter('./projector', sess.graph)
 # adding into projector
 config = projector.ProjectorConfig()
 embed= config.embeddings.add()
-embed.tensor_name = 'fs_embedding:0'
+embed.tensor_name = 'prefix_embedding'
 embed.metadata_path = './projector/prefix_metadata.tsv'
 
 # Specify the width and height of a single thumbnail.
@@ -60,5 +60,6 @@ projector.visualize_embeddings(writer, config)
 
 saver.save(sess, './projector/prefix_model.ckpt', global_step=10000)
 
+print("Save")
 # open tensorboard with logdir, check localhost:6006 for viewing your embedding.
 # tensorboard --logdir="./projector/"
